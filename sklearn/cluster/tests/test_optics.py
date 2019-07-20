@@ -245,6 +245,23 @@ def test_dbscan_optics_parity(eps, min_samples):
     assert percent_mismatch <= 0.05
 
 
+def test_min_samples_min_clusters_float_int_parity():
+    X, labels_true = make_blobs(n_samples=750, centers=centers,
+                                cluster_std=0.4, random_state=0)
+
+    # calculate optics with dbscan extract at 0.3 epsilon
+    op_both_int = OPTICS(min_samples=7, min_cluster_size=3)
+    op_int_none = OPTICS(min_samples=7)
+
+    op_both_float = OPTICS(min_samples=0.01, min_cluster_size=0.05)
+    op_float_none = OPTICS(min_samples=0.01)
+
+    assert op_both_int.min_samples == op_both_float.min_samples
+    assert op_both_int.min_cluster_size == op_both_float.min_cluster_size
+    assert op_int_none.min_samples == op_float_none.min_samples
+    assert op_int_none.min_cluster_size == op_float_none.min_cluster_size
+
+
 def test_min_samples_edge_case():
     C1 = [[0, 0], [0, 0.1], [0, -.1]]
     C2 = [[10, 10], [10, 9], [10, 11]]
